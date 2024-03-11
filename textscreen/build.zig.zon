@@ -1,0 +1,11 @@
+.{
+    .name = "textscreen",
+    .version = "0.0.0",
+    .dependencies = .{
+        .sdl2 = .{
+            .url = "https://github.com/MasterQ32/SDL.zig/archive/39fb8355cccb45a241a891c4848ab925af20fee4.tar.gz",
+            .hash = "12203537fc1357c4efce1c7a5ae3b407b9070490d83acd69aa3363b6b8e8a2b27870",
+        },
+    },
+    .paths = .{""},
+}
