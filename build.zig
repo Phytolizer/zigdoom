@@ -48,4 +48,9 @@ pub fn build(b: *std.Build) void {
         .libs = &.{ textscreen_pkg.lib, opl_pkg.lib, pcsound_pkg.lib },
     });
     b.installArtifact(exe);
+
+    const run = b.addRunArtifact(exe);
+    if (b.args) |args| run.addArgs(args);
+    const run_step = b.step("run", "Run " ++ package_name);
+    run_step.dependOn(&run.step);
 }
