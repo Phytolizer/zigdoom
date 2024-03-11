@@ -2,6 +2,7 @@ const std = @import("std");
 
 const textscreen = @import("textscreen");
 const opl = @import("opl");
+const pcsound = @import("pcsound");
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
@@ -37,4 +38,6 @@ pub fn build(b: *std.Build) void {
     b.installArtifact(textscreen_pkg.lib);
     const opl_pkg = opl.package(b, target, optimize, .{ .config_h = config_h });
     b.installArtifact(opl_pkg.lib);
+    const pcsound_pkg = pcsound.package(b, target, optimize, .{ .config_h = config_h });
+    b.installArtifact(pcsound_pkg.lib);
 }

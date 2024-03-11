@@ -5,6 +5,7 @@
     .dependencies = .{
         .textscreen = .{ .path = "textscreen" },
         .opl = .{ .path = "opl" },
+        .pcsound = .{ .path = "pcsound" },
     },
     .paths = .{""},
 }
