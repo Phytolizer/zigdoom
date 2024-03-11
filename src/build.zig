@@ -129,6 +129,7 @@ pub fn package(
     exe.linkSystemLibrary("SDL2_net");
     exe.linkSystemLibrary("SDL2_mixer");
     exe.linkSystemLibrary("fluidsynth");
+    exe.linkSystemLibrary("samplerate");
     exe.linkSystemLibrary("png");
 
     return exe;

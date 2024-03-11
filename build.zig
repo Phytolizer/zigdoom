@@ -30,6 +30,7 @@ pub fn build(b: *std.Build) void {
         .PACKAGE_STRING = package_string,
         .PROGRAM_PREFIX = program_prefix,
         .HAVE_FLUIDSYNTH = true,
+        .HAVE_LIBSAMPLERATE = true,
         .HAVE_LIBPNG = true,
         .HAVE_DIRENT_H = true,
         .HAVE_DECL_STRCASECMP = true,
