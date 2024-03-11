@@ -27,26 +27,7 @@
 #define inline __inline
 #endif
 
-// #define macros to provide functions missing in Windows.
-// Outside Windows, we use strings.h for str[n]casecmp.
-
-
-#if !HAVE_DECL_STRCASECMP || !HAVE_DECL_STRNCASECMP
-
-#include <string.h>
-#if !HAVE_DECL_STRCASECMP
-#define strcasecmp stricmp
-#endif
-#if !HAVE_DECL_STRNCASECMP
-#define strncasecmp strnicmp
-#endif
-
-#else
-
-#include <strings.h>
-
-#endif
-
+#include "cext/cext.h"
 
 //
 // The packed attribute forces structures to be packed into the minimum 

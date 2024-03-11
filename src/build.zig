@@ -103,6 +103,7 @@ pub fn package(
     opts: struct {
         config_h: *std.Build.Step.ConfigHeader,
         libs: []const *std.Build.Step.Compile,
+        doom_libs: []const *std.Build.Step.Compile,
     },
 ) *std.Build.Step.Compile {
     const exe = b.addExecutable(.{
@@ -116,7 +117,10 @@ pub fn package(
     for (opts.libs) |l| {
         exe.linkLibrary(l);
     }
-    const doom_pkg = doom.package(b, target, optimize, .{ .config_h = opts.config_h });
+    const doom_pkg = doom.package(b, target, optimize, .{
+        .config_h = opts.config_h,
+        .libs = opts.doom_libs,
+    });
     exe.linkLibrary(doom_pkg.lib);
 
     inline for (sources) |basepath| {

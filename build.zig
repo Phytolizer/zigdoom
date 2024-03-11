@@ -1,5 +1,6 @@
 const std = @import("std");
 
+const cext = @import("cext");
 const textscreen = @import("textscreen");
 const opl = @import("opl");
 const pcsound = @import("pcsound");
@@ -33,8 +34,6 @@ pub fn build(b: *std.Build) void {
         .HAVE_LIBSAMPLERATE = true,
         .HAVE_LIBPNG = true,
         .HAVE_DIRENT_H = true,
-        .HAVE_DECL_STRCASECMP = true,
-        .HAVE_DECL_STRNCASECMP = true,
     });
 
     const textscreen_pkg = textscreen.package(b, target, optimize);
@@ -43,9 +42,12 @@ pub fn build(b: *std.Build) void {
     b.installArtifact(opl_pkg.lib);
     const pcsound_pkg = pcsound.package(b, target, optimize, .{ .config_h = config_h });
     b.installArtifact(pcsound_pkg.lib);
+    const cext_pkg = cext.package(b, target, optimize);
+    b.installArtifact(cext_pkg.lib);
     const exe = src.package(b, target, optimize, .{
         .config_h = config_h,
         .libs = &.{ textscreen_pkg.lib, opl_pkg.lib, pcsound_pkg.lib },
+        .doom_libs = &.{cext_pkg.lib},
     });
     b.installArtifact(exe);
 

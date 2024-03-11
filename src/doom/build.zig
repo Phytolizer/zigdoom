@@ -74,7 +74,10 @@ pub fn package(
     b: *std.Build,
     target: std.Build.ResolvedTarget,
     optimize: std.builtin.OptimizeMode,
-    opts: struct { config_h: *std.Build.Step.ConfigHeader },
+    opts: struct {
+        config_h: *std.Build.Step.ConfigHeader,
+        libs: []const *std.Build.Step.Compile,
+    },
 ) Package {
     const lib = b.addStaticLibrary(.{
         .name = "doom",
@@ -85,6 +88,7 @@ pub fn package(
     lib.addIncludePath(.{ .path = this_dir });
     lib.addIncludePath(.{ .path = this_dir ++ "/.." });
     lib.addConfigHeader(opts.config_h);
+    for (opts.libs) |l| lib.linkLibrary(l);
     lib.installHeadersDirectoryOptions(.{
         .source_dir = .{ .path = this_dir },
         .install_dir = .header,

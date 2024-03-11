@@ -3,6 +3,7 @@
     .version = "0.0.0",
     .minimum_zig_version = "0.12.0-dev.3182+f3227598e",
     .dependencies = .{
+        .cext = .{ .path = "cext" },
         .textscreen = .{ .path = "textscreen" },
         .opl = .{ .path = "opl" },
         .pcsound = .{ .path = "pcsound" },
