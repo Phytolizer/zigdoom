@@ -1,34 +1,71 @@
 const std = @import("std");
 
 const sources = .{
-    "txt_conditional.c",
-    "txt_checkbox.c",
-    "txt_desktop.c",
-    "txt_dropdown.c",
-    "txt_fileselect.c",
-    "txt_gui.c",
-    "txt_inputbox.c",
-    "txt_io.c",
-    "txt_button.c",
-    "txt_label.c",
-    "txt_radiobutton.c",
-    "txt_scrollpane.c",
-    "txt_separator.c",
-    "txt_spinctrl.c",
-    "txt_sdl.c",
-    "txt_strut.c",
-    "txt_table.c",
-    "txt_utf8.c",
-    "txt_widget.c",
-    "txt_window.c",
-    "txt_window_action.c",
+    "am_map.c",
+    "deh_ammo.c",
+    "deh_bexstr.c",
+    "deh_cheat.c",
+    "deh_doom.c",
+    "deh_frame.c",
+    "deh_misc.c",
+    "deh_ptr.c",
+    "deh_sound.c",
+    "deh_thing.c",
+    "deh_weapon.c",
+    "d_items.c",
+    "d_main.c",
+    "d_net.c",
+    "doomdef.c",
+    "doomstat.c",
+    "dstrings.c",
+    "f_finale.c",
+    "f_wipe.c",
+    "g_game.c",
+    "hu_lib.c",
+    "hu_stuff.c",
+    "info.c",
+    "m_menu.c",
+    "m_random.c",
+    "p_ceilng.c",
+    "p_doors.c",
+    "p_enemy.c",
+    "p_floor.c",
+    "p_inter.c",
+    "p_lights.c",
+    "p_map.c",
+    "p_maputl.c",
+    "p_mobj.c",
+    "p_plats.c",
+    "p_pspr.c",
+    "p_saveg.c",
+    "p_setup.c",
+    "p_sight.c",
+    "p_spec.c",
+    "p_switch.c",
+    "p_telept.c",
+    "p_tick.c",
+    "p_user.c",
+    "r_bsp.c",
+    "r_data.c",
+    "r_draw.c",
+    "r_main.c",
+    "r_plane.c",
+    "r_segs.c",
+    "r_sky.c",
+    "r_things.c",
+    "s_sound.c",
+    "sounds.c",
+    "statdump.c",
+    "st_lib.c",
+    "st_stuff.c",
+    "wi_stuff.c",
 };
 
 pub const Package = struct {
     lib: *std.Build.Step.Compile,
 
     pub fn link(self: Package, exe: *std.Build.Step.Compile) void {
-        exe.root_module.addImport("textscreen", &self.lib.root_module);
+        exe.root_module.addImport("doom", &self.lib.root_module);
         exe.linkLibrary(self.lib);
     }
 };
@@ -37,15 +74,17 @@ pub fn package(
     b: *std.Build,
     target: std.Build.ResolvedTarget,
     optimize: std.builtin.OptimizeMode,
+    opts: struct { config_h: *std.Build.Step.ConfigHeader },
 ) Package {
     const lib = b.addStaticLibrary(.{
-        .name = "textscreen",
+        .name = "doom",
         .target = target,
         .optimize = optimize,
         .link_libc = true,
     });
     lib.addIncludePath(.{ .path = this_dir });
-    lib.addIncludePath(.{ .path = this_dir ++ "/../src" });
+    lib.addIncludePath(.{ .path = this_dir ++ "/.." });
+    lib.addConfigHeader(opts.config_h);
     lib.installHeadersDirectoryOptions(.{
         .source_dir = .{ .path = this_dir },
         .install_dir = .header,
@@ -60,6 +99,8 @@ pub fn package(
     }
 
     lib.linkSystemLibrary("SDL2");
+    lib.linkSystemLibrary("SDL2_mixer");
+    lib.linkSystemLibrary("SDL2_net");
 
     return .{ .lib = lib };
 }

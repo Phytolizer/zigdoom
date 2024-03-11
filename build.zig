@@ -3,6 +3,7 @@ const std = @import("std");
 const textscreen = @import("textscreen");
 const opl = @import("opl");
 const pcsound = @import("pcsound");
+const src = @import("src");
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
@@ -30,6 +31,7 @@ pub fn build(b: *std.Build) void {
         .PROGRAM_PREFIX = program_prefix,
         .HAVE_FLUIDSYNTH = true,
         .HAVE_LIBPNG = true,
+        .HAVE_DIRENT_H = true,
         .HAVE_DECL_STRCASECMP = true,
         .HAVE_DECL_STRNCASECMP = true,
     });
@@ -40,4 +42,9 @@ pub fn build(b: *std.Build) void {
     b.installArtifact(opl_pkg.lib);
     const pcsound_pkg = pcsound.package(b, target, optimize, .{ .config_h = config_h });
     b.installArtifact(pcsound_pkg.lib);
+    const exe = src.package(b, target, optimize, .{
+        .config_h = config_h,
+        .libs = &.{ textscreen_pkg.lib, opl_pkg.lib, pcsound_pkg.lib },
+    });
+    b.installArtifact(exe);
 }

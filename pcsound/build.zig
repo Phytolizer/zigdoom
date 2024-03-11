@@ -31,6 +31,12 @@ pub fn package(
     });
     lib.addIncludePath(.{ .path = this_dir });
     lib.addConfigHeader(opts.config_h);
+    lib.installHeadersDirectoryOptions(.{
+        .source_dir = .{ .path = this_dir },
+        .install_dir = .header,
+        .install_subdir = "",
+        .include_extensions = &.{".h"},
+    });
 
     inline for (sources) |basepath| {
         const path = this_dir ++ "/" ++ basepath;

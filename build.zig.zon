@@ -6,6 +6,7 @@
         .textscreen = .{ .path = "textscreen" },
         .opl = .{ .path = "opl" },
         .pcsound = .{ .path = "pcsound" },
+        .src = .{ .path = "src" },
     },
     .paths = .{""},
 }
