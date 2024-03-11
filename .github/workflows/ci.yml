@@ -1,0 +1,17 @@
+name: CI
+
+on:
+  push:
+    branches: [ "chocolate" ]
+  pull_request:
+    branches: [ "chocolate" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: goto-bus-stop/setup-zig@v2
+    - name: build
+      run: zig build --verbose
