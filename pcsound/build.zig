@@ -1,6 +1,6 @@
 const std = @import("std");
 
-const sources = [_][]const u8{
+const sources = .{
     "pcsound.c",
     "pcsound_bsd.c",
     "pcsound_sdl.c",

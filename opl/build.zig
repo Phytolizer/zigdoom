@@ -1,6 +1,6 @@
 const std = @import("std");
 
-const sources = [_][]const u8{
+const sources = .{
     "opl.c",
     "opl_linux.c",
     "opl_obsd.c",

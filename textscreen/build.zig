@@ -1,6 +1,6 @@
 const std = @import("std");
 
-const sources = [_][]const u8{
+const sources = .{
     "txt_conditional.c",
     "txt_checkbox.c",
     "txt_desktop.c",
