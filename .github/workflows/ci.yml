@@ -11,7 +11,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: goto-bus-stop/setup-zig@v2
+    - name: system dependencies
+      run: sudo apt-get install -y libsdl2-dev libsdl2-mixer-dev libsdl2-net-dev libfluidsynth-dev libsamplerate-dev libpng-dev
     - name: build
       run: zig build --verbose
