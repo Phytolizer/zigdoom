@@ -33,17 +33,12 @@ pub fn build(b: *std.Build) void {
         .HAVE_FLUIDSYNTH = true,
         .HAVE_LIBSAMPLERATE = true,
         .HAVE_LIBPNG = true,
-        .HAVE_DIRENT_H = true,
     });
 
     const textscreen_pkg = textscreen.package(b, target, optimize);
-    b.installArtifact(textscreen_pkg.lib);
     const opl_pkg = opl.package(b, target, optimize, .{ .config_h = config_h });
-    b.installArtifact(opl_pkg.lib);
     const pcsound_pkg = pcsound.package(b, target, optimize, .{ .config_h = config_h });
-    b.installArtifact(pcsound_pkg.lib);
     const cext_pkg = cext.package(b, target, optimize);
-    b.installArtifact(cext_pkg.lib);
     const exe = src.package(b, target, optimize, .{
         .config_h = config_h,
         .libs = &.{ textscreen_pkg.lib, opl_pkg.lib, pcsound_pkg.lib },

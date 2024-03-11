@@ -38,7 +38,6 @@ const game_sources = .{
     "i_cdmus.c",
     "i_endoom.c",
     "i_flmusic.c",
-    "i_glob.c",
     "i_input.c",
     "i_joystick.c",
     "i_musicpack.c",
@@ -106,12 +105,22 @@ pub fn package(
         doom_libs: []const *std.Build.Step.Compile,
     },
 ) *std.Build.Step.Compile {
+    const lib = b.addStaticLibrary(.{
+        .name = "zigdoom",
+        .target = target,
+        .optimize = optimize,
+        .link_libc = true,
+        .root_source_file = .{ .path = this_dir ++ "/root.zig" },
+    });
+    lib.addIncludePath(.{ .path = this_dir });
+
     const exe = b.addExecutable(.{
         .name = "chocolate-doom",
         .target = target,
         .optimize = optimize,
         .link_libc = true,
     });
+    exe.linkLibrary(lib);
     exe.addIncludePath(.{ .path = this_dir });
     exe.addConfigHeader(opts.config_h);
     for (opts.libs) |l| {
