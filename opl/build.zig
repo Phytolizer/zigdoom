@@ -1,5 +1,4 @@
 const std = @import("std");
-const Sdk = @import("sdl2");
 
 const sources = [_][]const u8{
     "opl.c",
@@ -44,8 +43,7 @@ pub fn package(
         lib.addCSourceFile(source_file);
     }
 
-    const sdl = Sdk.init(b, null);
-    sdl.link(lib, .dynamic);
+    lib.linkSystemLibrary("SDL2");
     lib.linkSystemLibrary("SDL2_mixer");
 
     return .{ .lib = lib };

@@ -1,5 +1,4 @@
 const std = @import("std");
-const Sdk = @import("sdl2");
 
 const sources = [_][]const u8{
     "txt_conditional.c",
@@ -54,8 +53,7 @@ pub fn package(
         lib.addCSourceFile(source_file);
     }
 
-    const sdl = Sdk.init(b, null);
-    sdl.link(lib, .dynamic);
+    lib.linkSystemLibrary("SDL2");
 
     return .{ .lib = lib };
 }
