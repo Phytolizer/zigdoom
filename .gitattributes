@@ -1,0 +1,7 @@
+# Zig requires LF line endings.
+*.zig text eol=lf
+
+*.C linguist-language=C
+*.H linguist-language=C
+*.c linguist-language=C
+*.h linguist-language=C
