@@ -4,3 +4,4 @@ zig-out/
 /.cache
 /.vscode
 compile_flags.txt
+*.wad

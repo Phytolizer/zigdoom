@@ -45,7 +45,10 @@ pub fn package(
 
     inline for (sources) |basepath| {
         const path = this_dir ++ "/" ++ basepath;
-        const source_file = std.Build.Module.CSourceFile{ .file = .{ .path = path } };
+        const source_file = std.Build.Module.CSourceFile{
+            .file = .{ .path = path },
+            .flags = &.{"-fno-sanitize=undefined"},
+        };
         lib.addCSourceFile(source_file);
     }
 
