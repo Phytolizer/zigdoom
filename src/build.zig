@@ -113,6 +113,8 @@ pub fn package(
         .root_source_file = .{ .path = this_dir ++ "/root.zig" },
     });
     lib.addIncludePath(.{ .path = this_dir });
+    lib.addConfigHeader(opts.config_h);
+    for (opts.libs) |l| lib.linkLibrary(l);
 
     const exe = b.addExecutable(.{
         .name = "chocolate-doom",
@@ -123,9 +125,7 @@ pub fn package(
     exe.linkLibrary(lib);
     exe.addIncludePath(.{ .path = this_dir });
     exe.addConfigHeader(opts.config_h);
-    for (opts.libs) |l| {
-        exe.linkLibrary(l);
-    }
+    for (opts.libs) |l| exe.linkLibrary(l);
     const doom_pkg = doom.package(b, target, optimize, .{
         .config_h = opts.config_h,
         .libs = opts.doom_libs,
