@@ -1,3 +1,14 @@
+# zigdoom
+
+An incremental rewrite of the Chocolate Doom engine in Zig. Heretic, Hexen,
+and Strife are out of scope for this project.
+
+TODOs:
+- [ ] compile on Windows without MinGW
+- [ ] reduce platform-specific code
+
+Original README follows.
+
 # Chocolate Doom
 
 Chocolate Doom aims to accurately reproduce the original DOS version of
