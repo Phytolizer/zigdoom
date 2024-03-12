@@ -34,6 +34,12 @@ pub fn build(b: *std.Build) void {
         .HAVE_LIBSAMPLERATE = true,
         .HAVE_LIBPNG = true,
     });
+    const install_config_h = b.addInstallFileWithDir(
+        .{ .generated = &config_h.output_file },
+        .header,
+        "config.h",
+    );
+    b.getInstallStep().dependOn(&install_config_h.step);
 
     const textscreen_pkg = textscreen.package(b, target, optimize);
     const opl_pkg = opl.package(b, target, optimize, .{ .config_h = config_h });
