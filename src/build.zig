@@ -38,7 +38,6 @@ const game_sources = .{
     "i_cdmus.c",
     "i_endoom.c",
     "i_flmusic.c",
-    "i_glob_va.c",
     "i_input.c",
     "i_joystick.c",
     "i_musicpack.c",
