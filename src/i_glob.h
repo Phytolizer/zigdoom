@@ -19,6 +19,8 @@
 #ifndef __I_GLOB__
 #define __I_GLOB__
 
+#include <stddef.h>
+
 #define GLOB_FLAG_NOCASE  0x01
 #define GLOB_FLAG_SORTED  0x02
 
@@ -32,6 +34,11 @@ glob_t *I_StartGlob(const char *directory, const char *glob, int flags);
 // of patterns must be terminated with NULL.
 glob_t *I_StartMultiGlob(const char *directory, int flags,
                          const char *glob, ...);
+
+// Same as I_StartMultiGlob but using an array of glob patterns
+// rather than varargs.
+glob_t *I_StartMultiGlobArray(const char *directory, int flags,
+                              const char *const *globs, size_t count);
 
 // Finish reading file list.
 void I_EndGlob(glob_t *glob);

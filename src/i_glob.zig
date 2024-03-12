@@ -172,7 +172,12 @@ fn fallibleStartMultiGlob(directory: []const u8, flags: Flags, globs: []const []
 
 /// Same as I_StartGlob but multiple glob patterns can be provided. The list
 /// of patterns must be terminated with NULL.
-export fn I_StartMultiGlob(directory: [*c]const u8, flags: Flags, glob: [*c]const u8, ...) ?*Glob {
+export fn I_StartMultiGlobArray(
+    directory: [*c]const u8,
+    flags: Flags,
+    glob_array: [*c]const [*c]const u8,
+    glob_len: usize,
+) ?*Glob {
     const gpa = g_self.allocator();
     var globs = std.ArrayList([]const u8).init(gpa);
     defer {
@@ -186,18 +191,8 @@ export fn I_StartMultiGlob(directory: [*c]const u8, flags: Flags, glob: [*c]cons
         }
     }.f;
 
-    globs.append(dupeStr(glob, gpa) catch return null) catch return null;
-
-    // varargs
-    {
-        var ap = @cVaStart();
-        defer @cVaEnd(&ap);
-
-        while (true) {
-            const arg = @cVaArg(&ap, [*c]const u8);
-            if (arg == null) break;
-            globs.append(dupeStr(arg, gpa) catch return null) catch return null;
-        }
+    for (glob_array[0..glob_len]) |glob| {
+        globs.append(dupeStr(glob, gpa) catch return null) catch return null;
     }
 
     const result = fallibleStartMultiGlob(
@@ -212,12 +207,7 @@ export fn I_StartMultiGlob(directory: [*c]const u8, flags: Flags, glob: [*c]cons
 /// Start reading a list of file paths from the given directory which match
 /// the given glob pattern. I_EndGlob() must be called on completion.
 export fn I_StartGlob(directory: [*c]const u8, glob: [*c]const u8, flags: Flags) ?*Glob {
-    return I_StartMultiGlob(
-        directory,
-        flags,
-        glob,
-        @as([*c]const u8, null),
-    );
+    return I_StartMultiGlobArray(directory, flags, &[_][*c]const u8{glob}, 1);
 }
 
 /// Finish reading file list.
