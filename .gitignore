@@ -1,7 +1,7 @@
 zig-cache/
 zig-out/
-/build
-/.cache
+build/
+.cache/
 /.vscode
 compile_flags.txt
 *.wad
