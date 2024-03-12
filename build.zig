@@ -39,15 +39,25 @@ pub fn build(b: *std.Build) void {
     const opl_pkg = opl.package(b, target, optimize, .{ .config_h = config_h });
     const pcsound_pkg = pcsound.package(b, target, optimize, .{ .config_h = config_h });
     const cext_pkg = cext.package(b, target, optimize);
-    const exe = src.package(b, target, optimize, .{
+    const src_pkg = src.package(b, target, optimize, .{
         .config_h = config_h,
-        .libs = &.{ textscreen_pkg.lib, opl_pkg.lib, pcsound_pkg.lib },
-        .doom_libs = &.{cext_pkg.lib},
+        .libs = .{
+            .textscreen = textscreen_pkg.lib,
+            .opl = opl_pkg.lib,
+            .pcsound = pcsound_pkg.lib,
+        },
+        .cext = cext_pkg.lib,
     });
-    b.installArtifact(exe);
+    b.installArtifact(src_pkg.doom);
+    b.installArtifact(src_pkg.setup);
 
-    const run = b.addRunArtifact(exe);
+    const run = b.addRunArtifact(src_pkg.doom);
     if (b.args) |args| run.addArgs(args);
     const run_step = b.step("run", "Run " ++ package_name);
     run_step.dependOn(&run.step);
+
+    const run_setup = b.addRunArtifact(src_pkg.setup);
+    if (b.args) |args| run_setup.addArgs(args);
+    const run_setup_step = b.step("run-setup", "Run " ++ package_name ++ " setup");
+    run_setup_step.dependOn(&run_setup.step);
 }

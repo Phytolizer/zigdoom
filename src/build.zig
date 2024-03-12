@@ -1,6 +1,7 @@
 const std = @import("std");
 
 const doom = @import("doom");
+const setup = @import("setup");
 
 const common_sources = .{
     "i_main.c",
@@ -93,7 +94,29 @@ const dehacked_sources = .{
     "deh_text.c",
 };
 
+const setup_sources = .{
+    "deh_str.c",
+    "d_mode.c",
+    "d_iwad.c",
+    "i_timer.c",
+    "m_config.c",
+    "m_controls.c",
+    "net_io.c",
+    "net_packet.c",
+    "net_petname.c",
+    "net_sdl.c",
+    "net_query.c",
+    "net_structrw.c",
+    "z_native.c",
+};
+
 const sources = common_sources ++ game_sources ++ dehacked_sources;
+const all_setup_sources = common_sources ++ setup_sources;
+
+pub const Package = struct {
+    doom: *std.Build.Step.Compile,
+    setup: *std.Build.Step.Compile,
+};
 
 pub fn package(
     b: *std.Build,
@@ -101,36 +124,43 @@ pub fn package(
     optimize: std.builtin.OptimizeMode,
     opts: struct {
         config_h: *std.Build.Step.ConfigHeader,
-        libs: []const *std.Build.Step.Compile,
-        doom_libs: []const *std.Build.Step.Compile,
+        libs: struct {
+            textscreen: *std.Build.Step.Compile,
+            opl: *std.Build.Step.Compile,
+            pcsound: *std.Build.Step.Compile,
+        },
+        cext: *std.Build.Step.Compile,
     },
-) *std.Build.Step.Compile {
-    const lib = b.addStaticLibrary(.{
+) Package {
+    const doom_lib = b.addStaticLibrary(.{
         .name = "zigdoom",
         .target = target,
         .optimize = optimize,
         .link_libc = true,
         .root_source_file = .{ .path = this_dir ++ "/root.zig" },
     });
-    lib.addIncludePath(.{ .path = this_dir });
-    lib.addConfigHeader(opts.config_h);
-    for (opts.libs) |l| lib.linkLibrary(l);
-
-    const exe = b.addExecutable(.{
+    doom_lib.addIncludePath(.{ .path = this_dir });
+    doom_lib.addConfigHeader(opts.config_h);
+    doom_lib.linkLibrary(opts.libs.textscreen);
+    doom_lib.linkLibrary(opts.libs.opl);
+    doom_lib.linkLibrary(opts.libs.pcsound);
+    const doom_exe = b.addExecutable(.{
         .name = "chocolate-doom",
         .target = target,
         .optimize = optimize,
         .link_libc = true,
     });
-    exe.linkLibrary(lib);
-    exe.addIncludePath(.{ .path = this_dir });
-    exe.addConfigHeader(opts.config_h);
-    for (opts.libs) |l| exe.linkLibrary(l);
+    doom_exe.linkLibrary(doom_lib);
+    doom_exe.addIncludePath(.{ .path = this_dir });
+    doom_exe.addConfigHeader(opts.config_h);
+    doom_exe.linkLibrary(opts.libs.textscreen);
+    doom_exe.linkLibrary(opts.libs.opl);
+    doom_exe.linkLibrary(opts.libs.pcsound);
     const doom_pkg = doom.package(b, target, optimize, .{
         .config_h = opts.config_h,
-        .libs = opts.doom_libs,
+        .libs = &.{opts.cext},
     });
-    exe.linkLibrary(doom_pkg.lib);
+    doom_exe.linkLibrary(doom_pkg.lib);
 
     inline for (sources) |basepath| {
         const path = this_dir ++ "/" ++ basepath;
@@ -138,17 +168,45 @@ pub fn package(
             .file = .{ .path = path },
             .flags = &.{"-fno-sanitize=undefined"},
         };
-        exe.addCSourceFile(source_file);
+        doom_exe.addCSourceFile(source_file);
     }
 
-    exe.linkSystemLibrary("SDL2");
-    exe.linkSystemLibrary("SDL2_net");
-    exe.linkSystemLibrary("SDL2_mixer");
-    exe.linkSystemLibrary("fluidsynth");
-    exe.linkSystemLibrary("samplerate");
-    exe.linkSystemLibrary("png");
+    doom_exe.linkSystemLibrary("SDL2");
+    doom_exe.linkSystemLibrary("SDL2_net");
+    doom_exe.linkSystemLibrary("SDL2_mixer");
+    doom_exe.linkSystemLibrary("fluidsynth");
+    doom_exe.linkSystemLibrary("samplerate");
+    doom_exe.linkSystemLibrary("png");
 
-    return exe;
+    const setup_exe = b.addExecutable(.{
+        .name = "chocolate-setup",
+        .target = target,
+        .optimize = optimize,
+        .link_libc = true,
+    });
+    setup_exe.addIncludePath(.{ .path = this_dir });
+    setup_exe.addConfigHeader(opts.config_h);
+    inline for (all_setup_sources) |basepath| {
+        const path = this_dir ++ "/" ++ basepath;
+        const source_file = std.Build.Module.CSourceFile{
+            .file = .{ .path = path },
+            .flags = &.{"-fno-sanitize=undefined"},
+        };
+        setup_exe.addCSourceFile(source_file);
+    }
+
+    setup_exe.linkSystemLibrary("SDL2");
+    setup_exe.linkSystemLibrary("SDL2_mixer");
+    setup_exe.linkSystemLibrary("SDL2_net");
+    const setup_pkg = setup.package(b, target, optimize, .{
+        .config_h = opts.config_h,
+        .libs = &.{opts.cext},
+    });
+    setup_exe.linkLibrary(doom_lib);
+    setup_exe.linkLibrary(setup_pkg.lib);
+    setup_exe.linkLibrary(opts.libs.textscreen);
+
+    return .{ .doom = doom_exe, .setup = setup_exe };
 }
 
 pub fn build(b: *std.Build) void {
