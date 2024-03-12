@@ -15,8 +15,6 @@ const sources = .{
     "d_items.c",
     "d_main.c",
     "d_net.c",
-    "doomdef.c",
-    "doomstat.c",
     "dstrings.c",
     "f_finale.c",
     "f_wipe.c",
@@ -84,6 +82,7 @@ pub fn package(
         .target = target,
         .optimize = optimize,
         .link_libc = true,
+        .root_source_file = .{ .path = this_dir ++ "/root.zig" },
     });
     lib.addIncludePath(.{ .path = this_dir });
     lib.addIncludePath(.{ .path = this_dir ++ "/.." });
