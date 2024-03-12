@@ -46,35 +46,6 @@ export fn I_Quit() noreturn {
     std.process.exit(0);
 }
 
-fn ReturnType(comptime T: type) type {
-    return switch (@typeInfo(T)) {
-        .Pointer => |p| return ReturnType(p.child),
-        .Fn => |f| return f.return_type.?,
-        else => @compileLog(T),
-    };
-}
-
-fn dispatchVa7(
-    f: anytype,
-    const_args: anytype,
-    args: []const [*c]const u8,
-) ReturnType(@TypeOf(f)) {
-    // HACK: dispatch on count to avoid vararg issues - it is known to be <= 7
-    return switch (args.len) {
-        1 => @call(.auto, f, const_args ++ .{args[0]}),
-        2 => @call(.auto, f, const_args ++ .{ args[0], args[1] }),
-        3 => @call(.auto, f, const_args ++ .{ args[0], args[1], args[2] }),
-        4 => @call(.auto, f, const_args ++ .{ args[0], args[1], args[2], args[3] }),
-        5 => @call(.auto, f, const_args ++ .{ args[0], args[1], args[2], args[3], args[4] }),
-        6 => @call(.auto, f, const_args ++ .{ args[0], args[1], args[2], args[3], args[4], args[5] }),
-        7 => @call(.auto, f, const_args ++ .{ args[0], args[1], args[2], args[3], args[4], args[5], args[6] }),
-        else => {
-            std.log.err("dispatchVa7: too many arguments ({d})", .{args.len});
-            std.process.abort();
-        },
-    };
-}
-
 export fn I_ErrorUnformatted(message: [*c]const u8) noreturn {
     while (exit_funcs) |entry| : (exit_funcs = entry.next) {
         if (entry.run_on_error)
