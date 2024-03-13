@@ -3,14 +3,14 @@ const std = @import("std");
 const doom = @import("doom");
 const setup = @import("setup");
 
-const common_sources = .{
+const common_sources = [_][]const u8{
     "i_main.c",
     "i_system.c",
     "m_argv.c",
     "m_misc.c",
 };
 
-const dedserv_sources = .{
+const dedserv_sources = [_][]const u8{
     "d_dedicated.c",
     "d_iwad.c",
     "d_mode.c",
@@ -28,7 +28,7 @@ const dedserv_sources = .{
     "z_native.c",
 };
 
-const game_sources = .{
+const game_sources = [_][]const u8{
     "aes_prng.c",
     "d_event.c",
     "d_iwad.c",
@@ -87,14 +87,14 @@ const game_sources = .{
     "z_zone.c",
 };
 
-const dehacked_sources = .{
+const dehacked_sources = [_][]const u8{
     "deh_io.c",
     "deh_main.c",
     "deh_mapping.c",
     "deh_text.c",
 };
 
-const setup_sources = .{
+const setup_sources = [_][]const u8{
     "deh_str.c",
     "d_mode.c",
     "d_iwad.c",
@@ -110,6 +110,8 @@ const setup_sources = .{
     "z_native.c",
 };
 
+const slash = std.fs.path.sep_str;
+
 const sources = common_sources ++ game_sources ++ dehacked_sources;
 const all_setup_sources = common_sources ++ setup_sources;
 
@@ -117,6 +119,26 @@ pub const Package = struct {
     doom: *std.Build.Step.Compile,
     setup: *std.Build.Step.Compile,
 };
+
+fn linkWindows(exe: *std.Build.Step.Compile) void {
+    exe.subsystem = .Windows;
+    inline for (.{
+        "Advapi32",
+        "Gdi32",
+        "Imm32",
+        "Iphlpapi",
+        "Ole32",
+        "OleAut32",
+        "SetupAPI",
+        "Shell32",
+        "User32",
+        "Version",
+        "Winmm",
+        "Ws2_32",
+    }) |libname| {
+        exe.linkSystemLibrary(libname);
+    }
+}
 
 pub fn package(
     b: *std.Build,
@@ -150,6 +172,8 @@ pub fn package(
         .optimize = optimize,
         .link_libc = true,
     });
+    if (target.result.os.tag == .windows)
+        linkWindows(doom_exe);
     doom_exe.linkLibrary(doom_lib);
     doom_exe.addIncludePath(.{ .path = this_dir });
     doom_exe.addConfigHeader(opts.config_h);
@@ -162,21 +186,20 @@ pub fn package(
     });
     doom_exe.linkLibrary(doom_pkg.lib);
 
-    inline for (sources) |basepath| {
-        const path = this_dir ++ "/" ++ basepath;
-        const source_file = std.Build.Module.CSourceFile{
-            .file = .{ .path = path },
-            .flags = &.{"-fno-sanitize=undefined"},
-        };
-        doom_exe.addCSourceFile(source_file);
-    }
+    doom_exe.addCSourceFiles(.{
+        .root = .{ .path = this_dir },
+        .files = &sources,
+        .flags = &.{"-fno-sanitize=undefined"},
+    });
 
     doom_exe.linkSystemLibrary("SDL2");
     doom_exe.linkSystemLibrary("SDL2_net");
     doom_exe.linkSystemLibrary("SDL2_mixer");
     doom_exe.linkSystemLibrary("fluidsynth");
     doom_exe.linkSystemLibrary("samplerate");
-    doom_exe.linkSystemLibrary("png");
+    doom_exe.linkSystemLibrary("libpng");
+    if (target.result.os.tag == .windows)
+        doom_exe.linkSystemLibrary("SDL2main");
 
     const setup_exe = b.addExecutable(.{
         .name = "chocolate-setup",
@@ -184,16 +207,15 @@ pub fn package(
         .optimize = optimize,
         .link_libc = true,
     });
+    if (target.result.os.tag == .windows)
+        linkWindows(setup_exe);
     setup_exe.addIncludePath(.{ .path = this_dir });
     setup_exe.addConfigHeader(opts.config_h);
-    inline for (all_setup_sources) |basepath| {
-        const path = this_dir ++ "/" ++ basepath;
-        const source_file = std.Build.Module.CSourceFile{
-            .file = .{ .path = path },
-            .flags = &.{"-fno-sanitize=undefined"},
-        };
-        setup_exe.addCSourceFile(source_file);
-    }
+    setup_exe.addCSourceFiles(.{
+        .root = .{ .path = this_dir },
+        .files = &all_setup_sources,
+        .flags = &.{"-fno-sanitize=undefined"},
+    });
 
     setup_exe.linkSystemLibrary("SDL2");
     setup_exe.linkSystemLibrary("SDL2_mixer");
@@ -205,6 +227,8 @@ pub fn package(
     setup_exe.linkLibrary(doom_lib);
     setup_exe.linkLibrary(setup_pkg.lib);
     setup_exe.linkLibrary(opts.libs.textscreen);
+    if (target.result.os.tag == .windows)
+        setup_exe.linkSystemLibrary("SDL2main");
 
     return .{ .doom = doom_exe, .setup = setup_exe };
 }
@@ -222,3 +246,5 @@ const this_dir = struct {
         return comptime std.fs.path.dirname(@src().file) orelse ".";
     }
 }.f();
+
+const root_path = std.fs.path.diskDesignator(this_dir) ++ slash;

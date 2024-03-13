@@ -15,6 +15,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "m_misc.h"
+
 #include "txt_label.h"
 #include "txt_gui.h"
 #include "txt_io.h"
@@ -125,7 +127,7 @@ void TXT_SetLabel(txt_label_t *label, const char *value)
 
     // Set the new value
 
-    label->label = strdup(value);
+    label->label = M_StringDuplicate(value);
 
     // Work out how many lines in this label
 

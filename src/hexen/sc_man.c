@@ -428,7 +428,7 @@ int SC_MustMatchString(const char **strings)
 
 boolean SC_Compare(const char *text)
 {
-    if (strcasecmp(text, sc_String) == 0)
+    if (cext_strcasecmp(text, sc_String) == 0)
     {
         return true;
     }

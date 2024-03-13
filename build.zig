@@ -41,10 +41,15 @@ pub fn build(b: *std.Build) void {
     );
     b.getInstallStep().dependOn(&install_config_h.step);
 
-    const textscreen_pkg = textscreen.package(b, target, optimize);
+    const cext_pkg = cext.package(b, target, optimize);
+    const textscreen_pkg = textscreen.package(
+        b,
+        target,
+        optimize,
+        .{ .config_h = config_h, .cext = cext_pkg.lib },
+    );
     const opl_pkg = opl.package(b, target, optimize, .{ .config_h = config_h });
     const pcsound_pkg = pcsound.package(b, target, optimize, .{ .config_h = config_h });
-    const cext_pkg = cext.package(b, target, optimize);
     const src_pkg = src.package(b, target, optimize, .{
         .config_h = config_h,
         .libs = .{

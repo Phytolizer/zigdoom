@@ -41,7 +41,7 @@ static void *DEH_AmmoStart(deh_context_t *context, char *line)
         DEH_Warning(context, "Invalid ammo number: %i", ammo_number);
         return NULL;
     }
-    
+
     return &maxammo[ammo_number];
 }
 
@@ -70,9 +70,9 @@ static void DEH_AmmoParseLine(deh_context_t *context, char *line, void *tag)
 
     // maxammo
 
-    if (!strcasecmp(variable_name, "Per ammo"))
+    if (!cext_strcasecmp(variable_name, "Per ammo"))
         clipammo[ammo_number] = ivalue;
-    else if (!strcasecmp(variable_name, "Max ammo"))
+    else if (!cext_strcasecmp(variable_name, "Max ammo"))
         maxammo[ammo_number] = ivalue;
     else
     {

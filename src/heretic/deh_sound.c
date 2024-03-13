@@ -41,7 +41,7 @@ DEH_END_MAPPING
 static void *DEH_SoundStart(deh_context_t *context, char *line)
 {
     int sound_number = 0;
-    
+
     if (sscanf(line, "Sound %i", &sound_number) != 1)
     {
         DEH_Warning(context, "Parse error on section start");
@@ -57,7 +57,7 @@ static void *DEH_SoundStart(deh_context_t *context, char *line)
     if (sound_number >= DEH_VANILLA_NUMSFX)
     {
         DEH_Warning(context, "Attempt to modify SFX %i.  This will cause "
-                             "problems in Vanilla dehacked.", sound_number); 
+                             "problems in Vanilla dehacked.", sound_number);
     }
 
     return &S_sfx[sound_number];
@@ -84,7 +84,7 @@ static void DEH_SoundParseLine(deh_context_t *context, char *line, void *tag)
 
     // Set the field value:
 
-    if (!strcasecmp(variable_name, "Name"))
+    if (!cext_strcasecmp(variable_name, "Name"))
     {
         DEH_SetStringMapping(context, &sound_mapping, sfx,
                              variable_name, value);

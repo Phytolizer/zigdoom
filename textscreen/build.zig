@@ -37,6 +37,10 @@ pub fn package(
     b: *std.Build,
     target: std.Build.ResolvedTarget,
     optimize: std.builtin.OptimizeMode,
+    opts: struct {
+        config_h: *std.Build.Step.ConfigHeader,
+        cext: *std.Build.Step.Compile,
+    },
 ) Package {
     const lib = b.addStaticLibrary(.{
         .name = "textscreen",
@@ -44,6 +48,8 @@ pub fn package(
         .optimize = optimize,
         .link_libc = true,
     });
+    lib.addConfigHeader(opts.config_h);
+    lib.linkLibrary(opts.cext);
     lib.addIncludePath(.{ .path = this_dir });
     lib.addIncludePath(.{ .path = this_dir ++ "/../src" });
     lib.installHeadersDirectoryOptions(.{

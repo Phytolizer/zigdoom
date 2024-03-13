@@ -15,6 +15,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "m_misc.h"
+
 #include "txt_separator.h"
 #include "txt_gui.h"
 #include "txt_io.h"
@@ -79,7 +81,7 @@ void TXT_SetSeparatorLabel(txt_separator_t *separator, const char *label)
 
     if (label != NULL)
     {
-        separator->label = strdup(label);
+        separator->label = M_StringDuplicate(label);
     }
     else
     {

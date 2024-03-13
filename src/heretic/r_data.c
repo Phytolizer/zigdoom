@@ -407,7 +407,7 @@ void R_InitTextures(void)
         }
         texturecolumnlump[i] = Z_Malloc(texture->width * sizeof(short),
                                         PU_STATIC, 0);
-        texturecolumnofs[i] = Z_Malloc(texture->width * sizeof(short), 
+        texturecolumnofs[i] = Z_Malloc(texture->width * sizeof(short),
                                        PU_STATIC, 0);
         j = 1;
         while (j * 2 <= texture->width)
@@ -426,7 +426,7 @@ void R_InitTextures(void)
 
 //
 // precalculate whatever possible
-//              
+//
     for (i = 0; i < numtextures; i++)
     {
         R_GenerateLookup(i);
@@ -594,7 +594,7 @@ int R_CheckTextureNumForName(const char *name)
         return 0;
 
     for (i = 0; i < numtextures; i++)
-        if (!strncasecmp(textures[i]->name, name, 8))
+        if (!cext_strncasecmp(textures[i]->name, name, 8))
             return i;
 
     return -1;
@@ -648,7 +648,7 @@ void R_PrecacheLevel(void)
 
 //
 // precache flats
-//      
+//
     flatpresent = Z_Malloc(numflats, PU_STATIC, NULL);
     memset(flatpresent, 0, numflats);
     for (i = 0; i < numsectors; i++)

@@ -39,20 +39,20 @@ static void *DEH_FrameStart(deh_context_t *context, char *line)
 {
     int frame_number = 0;
     state_t *state;
-    
+
     if (sscanf(line, "Frame %i", &frame_number) != 1)
     {
         DEH_Warning(context, "Parse error on section start");
         return NULL;
     }
-    
+
     if (frame_number < 0 || frame_number >= NUMSTATES)
     {
         DEH_Warning(context, "Invalid frame number: %i", frame_number);
         return NULL;
     }
 
-    if (frame_number >= DEH_VANILLA_NUMSTATES) 
+    if (frame_number >= DEH_VANILLA_NUMSTATES)
     {
         DEH_Warning(context, "Attempt to modify frame %i: this will cause "
                              "problems in Vanilla dehacked.", frame_number);
@@ -64,7 +64,7 @@ static void *DEH_FrameStart(deh_context_t *context, char *line)
 }
 
 // Simulate a frame overflow: Doom has 967 frames in the states[] array, but
-// DOS dehacked internally only allocates memory for 966.  As a result, 
+// DOS dehacked internally only allocates memory for 966.  As a result,
 // attempts to set frame 966 (the last frame) will overflow the dehacked
 // array and overwrite the weaponinfo[] array instead.
 //
@@ -73,23 +73,23 @@ static void *DEH_FrameStart(deh_context_t *context, char *line)
 
 static void DEH_FrameOverflow(deh_context_t *context, char *varname, int value)
 {
-    if (!strcasecmp(varname, "Duration"))
+    if (!cext_strcasecmp(varname, "Duration"))
     {
         weaponinfo[0].ammo = value;
     }
-    else if (!strcasecmp(varname, "Codep frame")) 
+    else if (!cext_strcasecmp(varname, "Codep frame"))
     {
         weaponinfo[0].upstate = value;
     }
-    else if (!strcasecmp(varname, "Next frame")) 
+    else if (!cext_strcasecmp(varname, "Next frame"))
     {
         weaponinfo[0].downstate = value;
     }
-    else if (!strcasecmp(varname, "Unknown 1"))
+    else if (!cext_strcasecmp(varname, "Unknown 1"))
     {
         weaponinfo[0].readystate = value;
     }
-    else if (!strcasecmp(varname, "Unknown 2"))
+    else if (!cext_strcasecmp(varname, "Unknown 2"))
     {
         weaponinfo[0].atkstate = value;
     }
@@ -105,7 +105,7 @@ static void DEH_FrameParseLine(deh_context_t *context, char *line, void *tag)
     state_t *state;
     char *variable_name, *value;
     int ivalue;
-    
+
     if (tag == NULL)
        return;
 
@@ -120,11 +120,11 @@ static void DEH_FrameParseLine(deh_context_t *context, char *line, void *tag)
         DEH_Warning(context, "Failed to parse assignment");
         return;
     }
-    
+
     // all values are integers
 
     ivalue = atoi(value);
-    
+
     if (state == &states[NUMSTATES - 1])
     {
         DEH_FrameOverflow(context, variable_name, ivalue);

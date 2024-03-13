@@ -37,7 +37,7 @@ static deh_mapping_entry_t *GetMappingEntryByName(deh_context_t *context,
     {
         deh_mapping_entry_t *entry = &mapping->entries[i];
 
-        if (!strcasecmp(entry->name, name))
+        if (!cext_strcasecmp(entry->name, name))
         {
             if (entry->location == NULL)
             {
@@ -191,7 +191,7 @@ void DEH_StructSHA1Sum(sha1_context_t *context, deh_mapping_t *mapping,
                 SHA1_UpdateInt32(context, *((uint32_t *) location));
                 break;
             default:
-                I_Error("Unknown dehacked mapping field type for '%s' (BUG)", 
+                I_Error("Unknown dehacked mapping field type for '%s' (BUG)",
                         entry->name);
                 break;
         }

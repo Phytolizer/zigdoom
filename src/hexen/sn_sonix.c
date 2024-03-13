@@ -159,7 +159,7 @@ static int GetSoundOffset(char *name)
 
     for (i = 0; i < NUMSFX; i++)
     {
-        if (!strcasecmp(name, S_sfx[i].tagname))
+        if (!cext_strcasecmp(name, S_sfx[i].tagname))
         {
             return i;
         }
@@ -213,7 +213,7 @@ void SN_InitSequenceScript(void)
             }
             for (j = 0; j < SEQ_NUMSEQ; j++)
             {
-                if (!strcasecmp(SequenceTranslate[j].name, sc_String + 1))
+                if (!cext_strcasecmp(SequenceTranslate[j].name, sc_String + 1))
                 {
                     SequenceTranslate[j].scriptNum = i;
                     inSequence = j;

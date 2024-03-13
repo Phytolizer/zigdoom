@@ -16,6 +16,7 @@
 #include <string.h>
 
 #include "doomkeys.h"
+#include "m_misc.h"
 
 #include "txt_radiobutton.h"
 #include "txt_gui.h"
@@ -93,11 +94,11 @@ static int TXT_RadioButtonKeyPress(TXT_UNCAST_ARG(radiobutton), int key)
         }
         return 1;
     }
-    
+
     return 0;
 }
 
-static void TXT_RadioButtonMousePress(TXT_UNCAST_ARG(radiobutton), 
+static void TXT_RadioButtonMousePress(TXT_UNCAST_ARG(radiobutton),
                                       int x, int y, int b)
 {
     TXT_CAST_ARG(txt_radiobutton_t, radiobutton);
@@ -128,7 +129,7 @@ txt_radiobutton_t *TXT_NewRadioButton(const char *label, int *variable, int valu
     radiobutton = malloc(sizeof(txt_radiobutton_t));
 
     TXT_InitWidget(radiobutton, &txt_radiobutton_class);
-    radiobutton->label = strdup(label);
+    radiobutton->label = M_StringDuplicate(label);
     radiobutton->variable = variable;
     radiobutton->value = value;
 
@@ -138,6 +139,6 @@ txt_radiobutton_t *TXT_NewRadioButton(const char *label, int *variable, int valu
 void TXT_SetRadioButtonLabel(txt_radiobutton_t *radiobutton, const char *value)
 {
     free(radiobutton->label);
-    radiobutton->label = strdup(value);
+    radiobutton->label = M_StringDuplicate(value);
 }
 

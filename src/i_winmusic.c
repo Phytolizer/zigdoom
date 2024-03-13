@@ -1580,7 +1580,7 @@ static boolean I_WIN_InitMusic(void)
         MIDIOUTCAPS caps;
 
         if (midiOutGetDevCaps(i, &caps, sizeof(caps)) == MMSYSERR_NOERROR &&
-            !strncasecmp(winmm_midi_device, caps.szPname, MAXPNAMELEN))
+            !cext_strncasecmp(winmm_midi_device, caps.szPname, MAXPNAMELEN))
         {
             MidiDevice = i;
             break;
@@ -1698,7 +1698,7 @@ static void I_WIN_ResumeSong(void)
     LeaveCriticalSection(&CriticalSection);
 }
 
-// Determine whether memory block is a .mid file 
+// Determine whether memory block is a .mid file
 
 static boolean IsMid(byte *mem, int len)
 {

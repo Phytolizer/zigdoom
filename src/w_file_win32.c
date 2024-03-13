@@ -21,6 +21,7 @@
 #ifdef _WIN32
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -84,7 +85,7 @@ unsigned int GetFileLength(HANDLE handle)
 
     return result;
 }
-   
+
 static wad_file_t *W_Win32_OpenFile(const char *path)
 {
     win32_wad_file_t *result;
@@ -149,7 +150,7 @@ static void W_Win32_CloseFile(wad_file_t *wad)
     }
 
     // Close the file
-  
+
     if (win32_wad->handle != NULL)
     {
         CloseHandle(win32_wad->handle);
@@ -158,7 +159,7 @@ static void W_Win32_CloseFile(wad_file_t *wad)
     Z_Free(win32_wad);
 }
 
-// Read data from the specified position in the file into the 
+// Read data from the specified position in the file into the
 // provided buffer.  Returns the number of bytes read.
 
 size_t W_Win32_Read(wad_file_t *wad, unsigned int offset,
@@ -191,7 +192,7 @@ size_t W_Win32_Read(wad_file_t *wad, unsigned int offset,
 }
 
 
-wad_file_class_t win32_wad_file = 
+wad_file_class_t win32_wad_file =
 {
     W_Win32_OpenFile,
     W_Win32_CloseFile,

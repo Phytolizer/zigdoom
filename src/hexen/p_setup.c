@@ -149,7 +149,7 @@ static int MapCmdIDs[] = {
     MCMD_CD_TITLETRACK
 };
 
-static int cd_NonLevelTracks[6];        // Non-level specific song cd track numbers 
+static int cd_NonLevelTracks[6];        // Non-level specific song cd track numbers
 
 // CODE --------------------------------------------------------------------
 
@@ -834,7 +834,7 @@ static void InitMapInfo(void)
         }
         SC_MustGetNumber();
         if (sc_Number < 1 || sc_Number > 99)
-        {                       // 
+        {                       //
             SC_ScriptError(NULL);
         }
         map = sc_Number;
@@ -1087,7 +1087,7 @@ boolean P_GetMapFadeTable(int map)
 
 char *P_GetMapSongLump(int map)
 {
-    if (!strcasecmp(MapInfo[QualifyMap(map)].songLump, DEFAULT_SONG_LUMP))
+    if (!cext_strcasecmp(MapInfo[QualifyMap(map)].songLump, DEFAULT_SONG_LUMP))
     {
         return NULL;
     }

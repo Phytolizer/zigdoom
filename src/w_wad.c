@@ -140,7 +140,7 @@ wad_file_t *W_AddFile (const char *filename)
 	return NULL;
     }
 
-    if (strcasecmp(filename+strlen(filename)-3 , "wad" ) )
+    if (cext_strcasecmp(filename+strlen(filename)-3 , "wad" ) )
     {
 	// single lump file
 
@@ -274,7 +274,7 @@ lumpindex_t W_CheckNumForName(const char *name)
 
         for (i = lumphash[hash]; i != -1; i = lumpinfo[i]->next)
         {
-            if (!strncasecmp(lumpinfo[i]->name, name, 8))
+            if (!cext_strncasecmp(lumpinfo[i]->name, name, 8))
             {
                 return i;
             }
@@ -288,7 +288,7 @@ lumpindex_t W_CheckNumForName(const char *name)
 
         for (i = numlumps - 1; i >= 0; --i)
         {
-            if (!strncasecmp(lumpinfo[i]->name, name, 8))
+            if (!cext_strncasecmp(lumpinfo[i]->name, name, 8))
             {
                 return i;
             }
@@ -317,7 +317,7 @@ lumpindex_t W_GetNumForName(const char *name)
     {
         I_Error ("W_GetNumForName: %s not found!", name);
     }
- 
+
     return i;
 }
 
@@ -376,7 +376,7 @@ void W_ReadLump(lumpindex_t lump, void *dest)
 // the lump data.
 //
 // 'tag' is the type of zone memory buffer to allocate for the lump
-// (usually PU_STATIC or PU_CACHE).  If the lump is loaded as 
+// (usually PU_STATIC or PU_CACHE).  If the lump is loaded as
 // PU_STATIC, it should be released back using W_ReleaseLumpNum
 // when no longer needed (do not use Z_ChangeTag).
 //
@@ -419,7 +419,7 @@ void *W_CacheLumpNum(lumpindex_t lumpnum, int tag)
 	W_ReadLump (lumpnum, lump->cache);
         result = lump->cache;
     }
-	
+
     return result;
 }
 
@@ -433,12 +433,12 @@ void *W_CacheLumpName(const char *name, int tag)
     return W_CacheLumpNum(W_GetNumForName(name), tag);
 }
 
-// 
-// Release a lump back to the cache, so that it can be reused later 
+//
+// Release a lump back to the cache, so that it can be reused later
 // without having to read from disk again, or alternatively, discarded
 // if we run out of memory.
 //
-// Back in Vanilla Doom, this was just done using Z_ChangeTag 
+// Back in Vanilla Doom, this was just done using Z_ChangeTag
 // directly, but now that we have WAD mmap, things are a bit more
 // complicated ...
 //
@@ -486,10 +486,10 @@ void W_Profile (void)
     FILE*	f;
     int		j;
     char	name[9];
-	
-	
+
+
     for (i=0 ; i<numlumps ; i++)
-    {	
+    {
 	ptr = lumpinfo[i].cache;
 	if (!ptr)
 	{
@@ -507,7 +507,7 @@ void W_Profile (void)
 	info[i][profilecount] = ch;
     }
     profilecount++;
-	
+
     f = M_fopen ("waddump.txt","w");
     name[8] = 0;
 

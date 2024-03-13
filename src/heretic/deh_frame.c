@@ -287,7 +287,7 @@ static void DEH_FrameParseLine(deh_context_t *context, char *line, void *tag)
 
     // Action pointer field is a special case:
 
-    if (!strcasecmp(variable_name, "Action pointer"))
+    if (!cext_strcasecmp(variable_name, "Action pointer"))
     {
         void (*func)(struct mobj_s *, struct player_s *, struct pspdef_s *);
 
@@ -304,7 +304,7 @@ static void DEH_FrameParseLine(deh_context_t *context, char *line, void *tag)
     {
         // "Next frame" numbers need to undergo mapping.
 
-        if (!strcasecmp(variable_name, "Next frame"))
+        if (!cext_strcasecmp(variable_name, "Next frame"))
         {
             ivalue = DEH_MapHereticFrameNumber(ivalue);
         }

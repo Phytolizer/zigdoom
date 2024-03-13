@@ -18,6 +18,7 @@
 #include <string.h>
 
 #include "doomkeys.h"
+#include "m_misc.h"
 
 #include "txt_inputbox.h"
 #include "txt_gui.h"
@@ -91,7 +92,7 @@ static void FinishEditing(txt_inputbox_t *inputbox)
     if (inputbox->widget.widget_class == &txt_inputbox_class)
     {
         free(*((char **)inputbox->value));
-        *((char **) inputbox->value) = strdup(inputbox->buffer);
+        *((char **) inputbox->value) = M_StringDuplicate(inputbox->buffer);
     }
     else if (inputbox->widget.widget_class == &txt_int_inputbox_class)
     {
@@ -227,7 +228,7 @@ static int TXT_InputBoxKeyPress(TXT_UNCAST_ARG(inputbox), int key)
          && inputbox->widget.widget_class == &txt_inputbox_class)
         {
             free(*((char **)inputbox->value));
-            *((char **) inputbox->value) = strdup("");
+            *((char **) inputbox->value) = M_StringDuplicate("");
         }
 
         return 0;

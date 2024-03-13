@@ -1,6 +1,6 @@
 const std = @import("std");
 
-export fn strcasecmp(s1: [*:0]const u8, s2: [*:0]const u8) c_int {
+export fn cext_strcasecmp(s1: [*:0]const u8, s2: [*:0]const u8) c_int {
     if (s1 == s2) return 0;
 
     const slice1 = std.mem.span(s1);
@@ -14,7 +14,7 @@ export fn strcasecmp(s1: [*:0]const u8, s2: [*:0]const u8) c_int {
     };
 }
 
-export fn strncasecmp(s1: [*:0]const u8, s2: [*:0]const u8, n: usize) c_int {
+export fn cext_strncasecmp(s1: [*:0]const u8, s2: [*:0]const u8, n: usize) c_int {
     if (s1 == s2 or n == 0) return 0;
 
     for (0..n, s1, s2) |_, c1, c2| {

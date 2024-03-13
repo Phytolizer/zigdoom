@@ -68,7 +68,7 @@ static void DEH_AmmoParseLine(deh_context_t *context, char *line, void *tag)
 
     ivalue = atoi(value);
 
-    if (!strcasecmp(variable_name, "Per ammo"))
+    if (!cext_strcasecmp(variable_name, "Per ammo"))
     {
         // Heretic doesn't have a "per clip" ammo array, instead
         // it is per weapon.  However, the weapon number lines
@@ -76,7 +76,7 @@ static void DEH_AmmoParseLine(deh_context_t *context, char *line, void *tag)
 
         GetWeaponAmmo[ammo_number + 1] = ivalue;
     }
-    else if (!strcasecmp(variable_name, "Max ammo"))
+    else if (!cext_strcasecmp(variable_name, "Max ammo"))
     {
         maxammo[ammo_number] = ivalue;
     }

@@ -16,6 +16,7 @@
 #include <string.h>
 
 #include "doomkeys.h"
+#include "m_misc.h"
 
 #include "txt_checkbox.h"
 #include "txt_gui.h"
@@ -89,7 +90,7 @@ static int TXT_CheckBoxKeyPress(TXT_UNCAST_ARG(checkbox), int key)
         TXT_EmitSignal(checkbox, "changed");
         return 1;
     }
-    
+
     return 0;
 }
 
@@ -123,7 +124,7 @@ txt_checkbox_t *TXT_NewCheckBox(const char *label, int *variable)
     checkbox = malloc(sizeof(txt_checkbox_t));
 
     TXT_InitWidget(checkbox, &txt_checkbox_class);
-    checkbox->label = strdup(label);
+    checkbox->label = M_StringDuplicate(label);
     checkbox->variable = variable;
     checkbox->inverted = 0;
 

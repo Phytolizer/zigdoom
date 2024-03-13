@@ -16,6 +16,8 @@
 //	Disk load indicator.
 //
 
+#include <string.h>
+
 #include "doomtype.h"
 #include "deh_str.h"
 #include "i_swap.h"

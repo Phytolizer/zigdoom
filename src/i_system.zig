@@ -27,7 +27,7 @@ fn gpa() std.mem.Allocator {
     return gpa_state.allocator();
 }
 
-export fn I_AtExit(func: AtExitFunc, run_on_error: bool) void {
+pub export fn I_AtExit(func: AtExitFunc, run_on_error: bool) void {
     const entry = gpa().create(AtExitListEntry) catch unreachable;
     entry.* = .{
         .func = func,
@@ -37,7 +37,7 @@ export fn I_AtExit(func: AtExitFunc, run_on_error: bool) void {
     exit_funcs = entry;
 }
 
-export fn I_Quit() noreturn {
+pub export fn I_Quit() noreturn {
     while (exit_funcs) |entry| : (exit_funcs = entry.next) {
         entry.func.?();
     }
@@ -46,7 +46,7 @@ export fn I_Quit() noreturn {
     std.process.exit(0);
 }
 
-export fn I_ErrorUnformatted(message: [*c]const u8) noreturn {
+pub fn err(message: [:0]const u8) noreturn {
     while (exit_funcs) |entry| : (exit_funcs = entry.next) {
         if (entry.run_on_error)
             entry.func.?();
@@ -61,4 +61,13 @@ export fn I_ErrorUnformatted(message: [*c]const u8) noreturn {
     c.SDL_Quit();
     _ = gpa_state.deinit();
     std.process.exit(std.math.maxInt(u8));
+}
+
+pub export fn I_ErrorUnformatted(message: [*c]const u8) noreturn {
+    err(std.mem.span(message));
+}
+
+pub fn errorFmt(comptime format: []const u8, args: anytype) noreturn {
+    const message = std.fmt.allocPrintZ(gpa(), format, args) catch unreachable;
+    I_ErrorUnformatted(message.ptr);
 }

@@ -15,6 +15,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "m_misc.h"
+
 #include "txt_io.h"
 #include "txt_widget.h"
 #include "txt_gui.h"
@@ -65,7 +67,7 @@ void TXT_UnrefCallbackTable(txt_callback_table_t *table)
         {
             free(table->callbacks[i].signal_name);
         }
-    
+
         free(table->callbacks);
         free(table);
     }
@@ -94,7 +96,7 @@ void TXT_InitWidget(TXT_UNCAST_ARG(widget), txt_widget_class_t *widget_class)
 
 void TXT_SignalConnect(TXT_UNCAST_ARG(widget),
                        const char *signal_name,
-                       TxtWidgetSignalFunc func, 
+                       TxtWidgetSignalFunc func,
                        void *user_data)
 {
     TXT_CAST_ARG(txt_widget_t, widget);
@@ -105,13 +107,13 @@ void TXT_SignalConnect(TXT_UNCAST_ARG(widget),
 
     // Add a new callback to the table
 
-    table->callbacks 
+    table->callbacks
             = realloc(table->callbacks,
                       sizeof(txt_callback_t) * (table->num_callbacks + 1));
     callback = &table->callbacks[table->num_callbacks];
     ++table->num_callbacks;
 
-    callback->signal_name = strdup(signal_name);
+    callback->signal_name = M_StringDuplicate(signal_name);
     callback->func = func;
     callback->user_data = user_data;
 }

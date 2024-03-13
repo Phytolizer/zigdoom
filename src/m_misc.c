@@ -330,7 +330,7 @@ char *M_getenv(const char *name)
 
     for (i = 0; i < num_vars; ++i)
     {
-        if (!strcasecmp(name, env_vars[i].name))
+        if (!cext_strcasecmp(name, env_vars[i].name))
         {
             return env_vars[i].var;
         }
@@ -383,7 +383,7 @@ void M_MakeDirectory(const char *path)
         return;
     }
 
-    _wmkdir(wdir);
+    CreateDirectoryW(wdir, NULL);
 
     free(wdir);
 #else
@@ -406,7 +406,7 @@ boolean M_FileExists(const char *filename)
     }
     else
     {
-        // If we can't open because the file is a directory, the 
+        // If we can't open because the file is a directory, the
         // "file" exists at least!
 
         return errno == EISDIR;
@@ -487,13 +487,13 @@ char *M_FileCaseExists(const char *path)
 //
 
 long M_FileLength(FILE *handle)
-{ 
+{
     long savedpos;
     long length;
 
     // save the current position in the file
     savedpos = ftell(handle);
-    
+
     // jump to the end and find the length
     fseek(handle, 0, SEEK_END);
     length = ftell(handle);
@@ -512,7 +512,7 @@ boolean M_WriteFile(const char *name, const void *source, int length)
 {
     FILE *handle;
     int	count;
-	
+
     handle = M_fopen(name, "wb");
 
     if (handle == NULL)
@@ -520,10 +520,10 @@ boolean M_WriteFile(const char *name, const void *source, int length)
 
     count = fwrite(source, 1, length, handle);
     fclose(handle);
-	
+
     if (count < length)
 	return false;
-		
+
     return true;
 }
 
@@ -537,7 +537,7 @@ int M_ReadFile(const char *name, byte **buffer)
     FILE *handle;
     int	count, length;
     byte *buf;
-	
+
     handle = M_fopen(name, "rb");
     if (handle == NULL)
 	I_Error ("Couldn't read file %s", name);
@@ -546,14 +546,14 @@ int M_ReadFile(const char *name, byte **buffer)
     // reading the current position
 
     length = M_FileLength(handle);
-    
+
     buf = Z_Malloc (length + 1, PU_STATIC, NULL);
     count = fread(buf, 1, length, handle);
     fclose (handle);
-	
+
     if (count < length)
 	I_Error ("Couldn't read file %s", name);
-		
+
     buf[length] = '\0';
     *buffer = buf;
     return length;
@@ -745,33 +745,13 @@ const char *M_StrCaseStr(const char *haystack, const char *needle)
 
     for (i = 0; i <= len; ++i)
     {
-        if (!strncasecmp(haystack + i, needle, needle_len))
+        if (!cext_strncasecmp(haystack + i, needle, needle_len))
         {
             return haystack + i;
         }
     }
 
     return NULL;
-}
-
-//
-// Safe version of strdup() that checks the string was successfully
-// allocated.
-//
-
-char *M_StringDuplicate(const char *orig)
-{
-    char *result;
-
-    result = strdup(orig);
-
-    if (result == NULL)
-    {
-        I_Error("Failed to duplicate string (length %zu)\n",
-                strlen(orig));
-    }
-
-    return result;
 }
 
 //

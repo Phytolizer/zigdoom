@@ -191,7 +191,7 @@ static txt_dropdown_list_t *MidiDeviceSelector(void)
             free(midi_names[num_devices]);
             midi_names[num_devices] = M_StringDuplicate(caps.szPname);
 
-            if (!strncasecmp(winmm_midi_device, midi_names[num_devices],
+            if (!cext_strncasecmp(winmm_midi_device, midi_names[num_devices],
                              MAXPNAMELEN))
             {
                 // Set the dropdown list index to the saved device.

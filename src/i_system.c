@@ -142,7 +142,7 @@ byte *I_ZoneBase (int *size)
 
     zonemem = AutoAllocMemory(size, default_ram, min_ram);
 
-    printf("zone memory: %p, %x allocated for zone\n", 
+    printf("zone memory: %p, %x allocated for zone\n",
            zonemem, *size);
 
     return zonemem;
@@ -176,7 +176,7 @@ void I_PrintStartupBanner(const char *gamedescription)
     I_PrintDivider();
     I_PrintBanner(gamedescription);
     I_PrintDivider();
-    
+
     printf(
     " " PACKAGE_NAME " is free software, covered by the GNU General Public\n"
     " License.  There is NO warranty; not even for MERCHANTABILITY or FITNESS\n"
@@ -186,7 +186,7 @@ void I_PrintStartupBanner(const char *gamedescription)
     I_PrintDivider();
 }
 
-// 
+//
 // I_ConsoleStdout
 //
 // Returns true if stdout is a real console, false if it is a file
@@ -326,15 +326,15 @@ boolean I_GetMemoryValue(unsigned int offset, void *value, int size)
 
         if (p > 0)
         {
-            if (!strcasecmp(myargv[p + 1], "dos622"))
+            if (!cext_strcasecmp(myargv[p + 1], "dos622"))
             {
                 dos_mem_dump = mem_dump_dos622;
             }
-            if (!strcasecmp(myargv[p + 1], "dos71"))
+            if (!cext_strcasecmp(myargv[p + 1], "dos71"))
             {
                 dos_mem_dump = mem_dump_win98;
             }
-            else if (!strcasecmp(myargv[p + 1], "dosbox"))
+            else if (!cext_strcasecmp(myargv[p + 1], "dosbox"))
             {
                 dos_mem_dump = mem_dump_dosbox;
             }
