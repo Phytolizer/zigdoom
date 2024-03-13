@@ -52,9 +52,9 @@ pub fn err(message: [:0]const u8) noreturn {
             entry.func.?();
     }
 
-    const exit_gui_popup = c.M_ParmExists("-nogui") == 0;
+    const exit_gui_popup = !c.M_ParmExists("-nogui");
 
-    if (exit_gui_popup and c.I_ConsoleStdout() == 0) {
+    if (exit_gui_popup and !c.I_ConsoleStdout()) {
         _ = c.SDL_ShowSimpleMessageBox(c.SDL_MESSAGEBOX_ERROR, c.PACKAGE_STRING, message, null);
     }
 

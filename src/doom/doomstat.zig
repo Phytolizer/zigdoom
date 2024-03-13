@@ -25,4 +25,4 @@ export var gamemission: c.GameMission_t = c.doom;
 export var gameversion: c.GameVersion_t = c.exe_final2;
 export var gamevariant: c.GameVariant_t = c.vanilla;
 
-export var modifiedgame: c.boolean = 0;
+export var modifiedgame = false;

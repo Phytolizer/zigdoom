@@ -187,9 +187,9 @@ pub fn package(
     doom_exe.linkLibrary(doom_pkg.lib);
 
     doom_exe.addCSourceFiles(.{
+        .flags = &.{"-fno-sanitize=undefined"},
         .root = .{ .path = this_dir },
         .files = &sources,
-        .flags = &.{"-fno-sanitize=undefined"},
     });
 
     doom_exe.linkSystemLibrary("SDL2");
@@ -222,7 +222,7 @@ pub fn package(
     setup_exe.linkSystemLibrary("SDL2_net");
     const setup_pkg = setup.package(b, target, optimize, .{
         .config_h = opts.config_h,
-        .libs = &.{opts.cext},
+        .libs = &.{ opts.cext, opts.libs.textscreen },
     });
     setup_exe.linkLibrary(doom_lib);
     setup_exe.linkLibrary(setup_pkg.lib);

@@ -89,11 +89,9 @@ typedef bool boolean;
 
 #else
 
-typedef enum
-{
-    false,
-    true
-} boolean;
+typedef _Bool boolean;
+#define false ((_Bool)0)
+#define true ((_Bool)1)
 
 #endif
 
