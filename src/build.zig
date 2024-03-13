@@ -194,7 +194,7 @@ pub fn package(
     setup_exe.linkSystemLibrary("SDL2_net");
     const setup_pkg = setup.package(b, target, optimize, .{
         .config_h = opts.config_h,
-        .libs = &.{opts.cext},
+        .libs = &.{ opts.cext, opts.libs.textscreen },
     });
     setup_exe.linkLibrary(doom_lib);
     setup_exe.linkLibrary(setup_pkg.lib);
