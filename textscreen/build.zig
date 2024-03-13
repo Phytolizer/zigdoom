@@ -53,14 +53,11 @@ pub fn package(
         .include_extensions = &.{".h"},
     });
 
-    inline for (sources) |basepath| {
-        const path = this_dir ++ "/" ++ basepath;
-        const source_file = std.Build.Module.CSourceFile{
-            .file = .{ .path = path },
-            .flags = &.{"-fno-sanitize=undefined"},
-        };
-        lib.addCSourceFile(source_file);
-    }
+    lib.addCSourceFiles(.{
+        .root = .{ .path = this_dir },
+        .flags = &.{"-fno-sanitize=undefined"},
+        .files = &sources,
+    });
 
     lib.linkSystemLibrary("SDL2");
 

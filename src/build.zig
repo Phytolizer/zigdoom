@@ -162,14 +162,11 @@ pub fn package(
     });
     doom_exe.linkLibrary(doom_pkg.lib);
 
-    inline for (sources) |basepath| {
-        const path = this_dir ++ "/" ++ basepath;
-        const source_file = std.Build.Module.CSourceFile{
-            .file = .{ .path = path },
-            .flags = &.{"-fno-sanitize=undefined"},
-        };
-        doom_exe.addCSourceFile(source_file);
-    }
+    doom_exe.addCSourceFiles(.{
+        .flags = &.{"-fno-sanitize=undefined"},
+        .root = .{ .path = this_dir },
+        .files = &sources,
+    });
 
     doom_exe.linkSystemLibrary("SDL2");
     doom_exe.linkSystemLibrary("SDL2_net");
@@ -186,14 +183,11 @@ pub fn package(
     });
     setup_exe.addIncludePath(.{ .path = this_dir });
     setup_exe.addConfigHeader(opts.config_h);
-    inline for (all_setup_sources) |basepath| {
-        const path = this_dir ++ "/" ++ basepath;
-        const source_file = std.Build.Module.CSourceFile{
-            .file = .{ .path = path },
-            .flags = &.{"-fno-sanitize=undefined"},
-        };
-        setup_exe.addCSourceFile(source_file);
-    }
+    setup_exe.addCSourceFiles(.{
+        .root = .{ .path = this_dir },
+        .files = &all_setup_sources,
+        .flags = &.{"-fno-sanitize=undefined"},
+    });
 
     setup_exe.linkSystemLibrary("SDL2");
     setup_exe.linkSystemLibrary("SDL2_mixer");
