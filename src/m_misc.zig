@@ -3,6 +3,7 @@ const zig = @import("i_system.zig");
 const c = @cImport({
     @cInclude("stdlib.h");
 });
+const libc = @import("libc.zig");
 
 ///
 /// Safe version of strdup() that checks the string was successfully
@@ -10,10 +11,7 @@ const c = @cImport({
 ///
 pub export fn M_StringDuplicate(orig: [*c]const u8) [*c]u8 {
     const orig_slice = std.mem.span(orig);
-    const result = @as([*]u8, @ptrCast(c.malloc(orig_slice.len + 1) orelse {
+    const slice = libc.allocator.dupeZ(u8, orig_slice) catch
         zig.errorFmt("Failed to duplicate string (length {d})", .{orig_slice.len});
-    }));
-    @memcpy(result, orig_slice);
-    result[orig_slice.len] = 0;
-    return result;
+    return slice.ptr;
 }
